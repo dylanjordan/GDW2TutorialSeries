@@ -16,6 +16,7 @@ public class MenuDefinition : MonoBehaviour
     public List<GameObject> _menuButtonObjects = new List<GameObject>();
     private List<ButtonDefinition> _menuButtonDefinitions = new List<ButtonDefinition>();
     private List<Button> _menuButtons = new List<Button>();
+    private List<Animator> _menuAnimators = new List<Animator>();
 
     public void Start()
     {
@@ -23,6 +24,11 @@ public class MenuDefinition : MonoBehaviour
         {
             _menuButtonDefinitions.Add(_menuButtonObjects[i].GetComponent<ButtonDefinition>());
             _menuButtons.Add(_menuButtonObjects[i].GetComponent<Button>());
+
+            Animator temp = null;
+            _menuButtonObjects[i].TryGetComponent(out temp);
+
+            _menuAnimators.Add(temp);
         }
     }
 
@@ -44,5 +50,10 @@ public class MenuDefinition : MonoBehaviour
     public List<Button> GetButtons()
     {
         return _menuButtons;
+    }
+
+    public List<Animator> GetAnimators()
+    {
+        return _menuAnimators;
     }
 }
