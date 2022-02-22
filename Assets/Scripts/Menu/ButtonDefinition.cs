@@ -18,6 +18,11 @@ public class ButtonDefinition : MonoBehaviour
     private Image _image;
     private Animator _animator;
 
+    public AudioClip _swapToSFX;
+    public AudioClip _confirmSFX;
+
+    public float _confirmTime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +49,11 @@ public class ButtonDefinition : MonoBehaviour
     {
         _selected = true;
 
+        if (_swapToSFX != null)
+        {
+            AudioSource.PlayClipAtPoint(_swapToSFX, Vector3.zero);
+        }
+
         if (_animated)
         {
             _animator.SetBool("Selected", _selected);
@@ -68,11 +78,18 @@ public class ButtonDefinition : MonoBehaviour
         }
     }
 
-    public void ClickButton()
+    public IEnumerator ClickButton()
     {
         if (!_disableControls)
         {
             _disableControls = true;
+
+            if (_confirmSFX != null)
+            {
+                AudioSource.PlayClipAtPoint(_confirmSFX, Vector3.zero);
+            }
+
+            yield return new WaitForSeconds(_confirmTime);
 
             _button.onClick.Invoke();
 
