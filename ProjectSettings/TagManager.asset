@@ -3,15 +3,20 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Pipe
+  - Standable
+  - Goomba
+  - Koopa
+  - Piranha Plant
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Piranha Plant
   - Water
   - UI
-  - 
+  - Pipes
   - 
   - 
   - 
