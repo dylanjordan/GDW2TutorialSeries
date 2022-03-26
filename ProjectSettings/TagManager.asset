@@ -9,6 +9,9 @@ TagManager:
   - Goomba
   - Koopa
   - Piranha Plant
+  - Coin
+  - Powerup
+  - Fireball
   layers:
   - Default
   - TransparentFX
@@ -17,9 +20,9 @@ TagManager:
   - Water
   - UI
   - Pipes
-  - 
-  - 
-  - 
+  - Player
+  - Fireball
+  - Enemy
   - 
   - 
   - 

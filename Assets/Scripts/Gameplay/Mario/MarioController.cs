@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class MarioController : MonoBehaviour
 {
+    Weapon weapon;
+
     [SerializeField] float _runForce;
     [SerializeField] float _jumpForce;
     [SerializeField] float _maxSpeed;
 
+    [SerializeField] GameObject bigMarioPrefab;
+    [SerializeField] GameObject smollMarioPrefab;
+
     Transform _trans;
     Rigidbody2D _body;
 
-    float runInput;
+    public float runInput;
 
     bool jumpInput;
     bool isGrounded;
+    bool isBig;
 
     // Start is called before the first frame update
     void Start()
     {
+        weapon = GetComponent<Weapon>();
         _trans = GetComponent<Transform>();
         _body = GetComponent<Rigidbody2D>();
     }
@@ -113,7 +120,16 @@ public class MarioController : MonoBehaviour
             {
                 if (!collision.gameObject.GetComponent<Goomba>().GetIsSquashed())
                 {
-                    Debug.Log("I died");
+                    if (isBig)
+                    {
+                        GetComponent<BoxCollider2D>().size = smollMarioPrefab.GetComponent<BoxCollider2D>().size;
+                        isBig = false;
+                    }
+                    else
+                    {
+                        Debug.Log("I died");
+                    }
+                    
                 }
             }
         }
@@ -153,13 +169,52 @@ public class MarioController : MonoBehaviour
             {
                 if (collision.gameObject.GetComponent<Koopa>().GetIsMoving())
                 {
-                    Debug.Log("Koopa Killed Me");
+                    if (isBig)
+                    {
+                        GetComponent<BoxCollider2D>().size = smollMarioPrefab.GetComponent<BoxCollider2D>().size;
+                        isBig = false;
+                    }
+                    else
+                    {
+                        Debug.Log("I died");
+                    }
                 }
             }
         }
         if (collision.gameObject.tag == "Piranha Plant")
         {
-            Debug.Log("Piranha Plant killed me");
+            if (isBig)
+            {
+                GetComponent<BoxCollider2D>().size = smollMarioPrefab.GetComponent<BoxCollider2D>().size;
+                isBig = false;
+            }
+            else
+            {
+                Debug.Log("I died");
+            }
+        }
+
+        if (collision.gameObject.name.Contains("Mushroom"))
+        {
+            if (!isBig)
+            {
+                Destroy(collision.gameObject);
+
+                isBig = true;
+
+                GetComponent<BoxCollider2D>().size = bigMarioPrefab.GetComponent<BoxCollider2D>().size;
+            }
+            else
+            {
+                Destroy(collision.gameObject);
+            }
+        }
+
+        if (collision.gameObject.name.Contains("FirePlant"))
+        {
+            Destroy(collision.gameObject);
+
+            weapon.inPowerUp = true;
         }
 
 
