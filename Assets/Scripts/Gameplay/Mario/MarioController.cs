@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MarioController : MonoBehaviour
 {
@@ -21,6 +22,8 @@ public class MarioController : MonoBehaviour
     bool jumpInput;
     bool isGrounded;
     bool isBig;
+    bool isDead;
+    bool deathStarted;
 
     // Start is called before the first frame update
     void Start()
@@ -51,6 +54,16 @@ public class MarioController : MonoBehaviour
         else
         {
             _body.drag = 1;
+        }
+
+        if (_trans.position.y <= -5 && !deathStarted)
+        {
+            StartDeath();
+        }
+
+        if (_trans.position.y <= -7)
+        {
+            Die();
         }
     }
 
@@ -99,6 +112,25 @@ public class MarioController : MonoBehaviour
         isGrounded = false;
     }
 
+    void StartDeath()
+    {
+        isDead = true;
+
+        _body.velocity = Vector2.zero;
+
+        _body.gravityScale = 3;
+
+        _body.AddForce(Vector3.up * _jumpForce / 2, ForceMode2D.Impulse);
+
+        GetComponent<Collider2D>().enabled = false;
+
+        deathStarted = true;
+    }
+
+    void Die()
+    {
+        SceneManager.LoadScene("World1-1");
+    }
     private void OnCollisionEnter2D(Collision2D collision)
     {
         for (int i = 0; i < collision.contacts.Length; i++)
@@ -127,7 +159,7 @@ public class MarioController : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("I died");
+                        StartDeath();
                     }
                     
                 }
@@ -176,7 +208,7 @@ public class MarioController : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("I died");
+                        StartDeath();
                     }
                 }
             }
@@ -190,7 +222,7 @@ public class MarioController : MonoBehaviour
             }
             else
             {
-                Debug.Log("I died");
+                StartDeath();
             }
         }
 
