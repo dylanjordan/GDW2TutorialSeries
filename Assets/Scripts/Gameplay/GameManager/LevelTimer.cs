@@ -21,13 +21,12 @@ public class LevelTimer : MonoBehaviour
         Timer = (int)currentTime;
      
         TimerDisplay.GetComponent<NumberDisplayDefenition>()._numericValue = Timer.ToString();
+
+        if (currentTime <= 0.0f)
+        {
+            FindObjectOfType<LevelStatus>().SetGameOver(true);
+        }
     }
 
-    public void TimerAddScore()
-    {
-        float time = 300 - currentTime;
-        int score = (int)time * 10;
-        FindObjectOfType<ScoreCounter>().AddScore(score);
-
-    }
+   
 }
