@@ -23,6 +23,7 @@ public class MarioController : MonoBehaviour
     bool isGrounded;
     bool isBig;
     bool isDead;
+    bool isRunning;
     bool deathStarted;
 
     // Start is called before the first frame update
@@ -31,13 +32,19 @@ public class MarioController : MonoBehaviour
         weapon = GetComponent<Weapon>();
         _trans = GetComponent<Transform>();
         _body = GetComponent<Rigidbody2D>();
+
+        FindObjectOfType<AudioManager>().Play("Music");
     }
 
     // Update is called once per frame
     void Update()
     {
         runInput = Input.GetAxis("Horizontal");
-        
+
+        if (runInput == 0)
+        {
+            isRunning = false;
+        }
         if (Input.GetKey(KeyCode.W))
         {
             jumpInput = true;
@@ -82,6 +89,8 @@ public class MarioController : MonoBehaviour
 
     void Run()
     {
+        isRunning = true;
+
         if (Mathf.Abs(_body.velocity.x) >= _maxSpeed)
         {
             return;
@@ -104,6 +113,8 @@ public class MarioController : MonoBehaviour
     {
         _body.AddForce(Vector2.up * _jumpForce, ForceMode2D.Impulse);
         isGrounded = false;
+
+        FindObjectOfType<AudioManager>().Play("Jump");
     }
 
     void EnemyBounce()
@@ -114,7 +125,21 @@ public class MarioController : MonoBehaviour
 
     void StartDeath()
     {
+        FindObjectOfType<Lives>().LoseLife();
         isDead = true;
+
+        FindObjectOfType<AudioManager>().Stop("Music");
+
+        if (FindObjectOfType<Lives>().GetCurrentLives() < 1)
+        {
+            FindObjectOfType<AudioManager>().Play("GameOver");
+        }
+        else
+        {
+            FindObjectOfType<AudioManager>().Play("LifeLost");
+        }
+
+    
 
         _body.velocity = Vector2.zero;
 
@@ -129,7 +154,14 @@ public class MarioController : MonoBehaviour
 
     void Die()
     {
-        SceneManager.LoadScene("World1-1");
+        if (FindObjectOfType<Lives>().GetCurrentLives() < 1)
+        {
+            FindObjectOfType<LevelStatus>().SetGameOver(true);
+        }
+        else
+        {
+            FindObjectOfType<LevelStatus>().SetLevelFailed(true);
+        }
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -147,6 +179,9 @@ public class MarioController : MonoBehaviour
             {
                 EnemyBounce();
                 collision.gameObject.GetComponent<Goomba>().SetIsSquashed(true);
+                FindObjectOfType<ScoreCounter>().AddScore(1000);
+
+                FindObjectOfType<AudioManager>().Play("Bump");
             }
             else
             {
@@ -156,12 +191,14 @@ public class MarioController : MonoBehaviour
                     {
                         GetComponent<BoxCollider2D>().size = smollMarioPrefab.GetComponent<BoxCollider2D>().size;
                         isBig = false;
+
+                        FindObjectOfType<AudioManager>().Play("PowerDown");
                     }
                     else
                     {
                         StartDeath();
                     }
-                    
+
                 }
             }
         }
@@ -176,6 +213,10 @@ public class MarioController : MonoBehaviour
                 collision.gameObject.GetComponent<Koopa>().SetIsMoving(false);
 
                 collision.gameObject.GetComponent<BoxCollider2D>().size = new Vector2(1, 1);
+
+                FindObjectOfType<ScoreCounter>().AddScore(1000);
+
+                FindObjectOfType<AudioManager>().Play("Bump");
             }
             else if (collision.gameObject.GetComponent<Koopa>().GetIsSquashed() && !collision.gameObject.GetComponent<Koopa>().GetIsKicked())
             {
@@ -196,6 +237,7 @@ public class MarioController : MonoBehaviour
                 collision.gameObject.GetComponent<Koopa>().SetIsMoving(false);
 
                 collision.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, collision.gameObject.GetComponent<Rigidbody2D>().velocity.y);
+                FindObjectOfType<ScoreCounter>().AddScore(100);
             }
             else
             {
@@ -205,6 +247,8 @@ public class MarioController : MonoBehaviour
                     {
                         GetComponent<BoxCollider2D>().size = smollMarioPrefab.GetComponent<BoxCollider2D>().size;
                         isBig = false;
+
+                        FindObjectOfType<AudioManager>().Play("PowerDown");
                     }
                     else
                     {
@@ -219,6 +263,8 @@ public class MarioController : MonoBehaviour
             {
                 GetComponent<BoxCollider2D>().size = smollMarioPrefab.GetComponent<BoxCollider2D>().size;
                 isBig = false;
+
+                FindObjectOfType<AudioManager>().Play("PowerDown");
             }
             else
             {
@@ -228,6 +274,7 @@ public class MarioController : MonoBehaviour
 
         if (collision.gameObject.name.Contains("Mushroom"))
         {
+            FindObjectOfType<AudioManager>().Play("PowerUp");
             if (!isBig)
             {
                 Destroy(collision.gameObject);
@@ -239,6 +286,8 @@ public class MarioController : MonoBehaviour
             else
             {
                 Destroy(collision.gameObject);
+
+                FindObjectOfType<ScoreCounter>().AddScore(500);
             }
         }
 
@@ -250,5 +299,25 @@ public class MarioController : MonoBehaviour
         }
 
 
+    }
+
+    public bool GetIsRunning()
+    {
+        return isRunning;
+    }
+
+    public bool GetIsGrounded()
+    {
+        return isGrounded;
+    }
+
+    public bool GetIsDead()
+    {
+        return isDead;
+    }
+
+    public bool GetIsBig()
+    {
+        return isBig;
     }
 }

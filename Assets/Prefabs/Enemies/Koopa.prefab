@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 708602723205142341}
   - component: {fileID: 708602723205142342}
   - component: {fileID: 708602723205142343}
+  - component: {fileID: 685090554764817312}
   m_Layer: 9
   m_Name: Koopa
   m_TagString: Koopa
@@ -146,3 +147,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _kickForce: 2.5
   _speed: 1.5
+--- !u!95 &685090554764817312
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 708602723205142336}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e72f7dbec1fd3e041a001e22d256bb11, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

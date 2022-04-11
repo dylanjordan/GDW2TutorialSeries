@@ -41,6 +41,8 @@ public class Koopa : MonoBehaviour
         GetComponent<Rigidbody2D>().AddForce(direction * _kickForce, ForceMode2D.Impulse);
         _isKicked = true;
         _isMoving = true;
+
+        FindObjectOfType<AudioManager>().Play("Kick");
     }
 
     public bool GetIsSquashed()
@@ -98,6 +100,8 @@ public class Koopa : MonoBehaviour
                 collision.gameObject.GetComponent<Collider2D>().enabled = false;
 
                 Destroy(collision.gameObject, 2);
+
+                FindObjectOfType<AudioManager>().Play("Bump");
 
                 ApplyKickForce(new Vector2(-collision.contacts[0].normal.normalized.x, 0));
             }

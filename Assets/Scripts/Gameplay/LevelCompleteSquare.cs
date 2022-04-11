@@ -44,7 +44,15 @@ public class LevelCompleteSquare : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         _itemCollected = true;
+        FindObjectOfType<LevelTimer>().TimerAddScore();
+        FindObjectOfType<LevelStatus>().SetLevelComplete(true);
+        StartCoroutine(TimeBeforeScene());
+        FindObjectOfType<AudioManager>().Stop("Music");
+        FindObjectOfType<AudioManager>().Play("LevelClear");
+    }
 
-        SceneManager.LoadScene("MainMenu");
+    public IEnumerator TimeBeforeScene()
+    {
+        yield return new WaitForSeconds(3);
     }
 }
